@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace OOP_Concepts
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             // Step 1: OOP Concepts in ConsoleApp
             Console.WriteLine("=== OOP Demo ===");
@@ -67,6 +69,31 @@ namespace OOP_Concepts
 
             Console.WriteLine("Evens (Query): " + string.Join(", ", evensQuery));
             Console.WriteLine("Evens (Method): " + string.Join(", ", evensMethod));
+
+            // Step 5: Async / Await
+            Console.WriteLine("\n=== Async/Await Demo ===");
+            await FetchDataAsync();
+
+            // Step 6: Reflection & Attributes
+            Console.WriteLine("\n=== Reflection Demo ===");
+
+            var type = typeof(DemoClass);
+            var classAttr = type.GetCustomAttribute<MyInfoAttribute>();
+            Console.WriteLine($"Class Developer: {classAttr.Developer}");
+
+            var method = type.GetMethod("ShowMessage");
+            var methodAttr = method.GetCustomAttribute<MyInfoAttribute>();
+            Console.WriteLine($"Method Developer: {methodAttr.Developer}");
+
+            var instance = Activator.CreateInstance(type);
+            method.Invoke(instance, null);
+        }
+
+        private static async Task FetchDataAsync()
+        {
+            Console.WriteLine("Fetching data...");
+            await Task.Delay(2000); // Simulate API call
+            Console.WriteLine("Data fetched.");
         }
     }
 
