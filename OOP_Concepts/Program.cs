@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OOP_Concepts
@@ -87,6 +88,38 @@ namespace OOP_Concepts
 
             var instance = Activator.CreateInstance(type);
             method.Invoke(instance, null);
+
+            Console.WriteLine("\n=== Thread vs Task Demo ===");
+
+            // Example 1: Using a Thread
+            Thread thread = new Thread(() =>
+            {
+                Console.WriteLine($"Thread: Running on ThreadId={Thread.CurrentThread.ManagedThreadId}");
+                Thread.Sleep(2000); // Blocking sleep
+                Console.WriteLine("Thread: Finished work");
+            });
+            thread.Start();
+            thread.Join(); // Wait for thread to finish
+
+            // Example 2: Using a Task
+            Task task = Task.Run(async () =>
+            {
+                Console.WriteLine($"Task: Running on ThreadId={Thread.CurrentThread.ManagedThreadId}");
+                await Task.Delay(2000); // Non-blocking delay
+                Console.WriteLine("Task: Finished work");
+            });
+            await task;
+
+            // Example 3: Parallel tasks
+            var tasks = Enumerable.Range(1, 3).Select(async i =>
+            {
+                Console.WriteLine($"Task {i} started on ThreadId={Thread.CurrentThread.ManagedThreadId}");
+                await Task.Delay(1000 * i);
+                Console.WriteLine($"Task {i} finished");
+            });
+            await Task.WhenAll(tasks);
+
+            Console.WriteLine("=== Demo Complete ===");
         }
 
         private static async Task FetchDataAsync()
